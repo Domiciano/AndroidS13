@@ -37,9 +37,10 @@ public class PostComposer extends DialogFragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View root = inflater.inflate(R.layout.composer, null);
-        Button galleryBtn = root.findViewById(R.id.galleryBtn);
         ImageView galleryImg = root.findViewById(R.id.galleryImg);
         TextView dateTV = root.findViewById(R.id.dateTV);
+        Button galleryBtn = root.findViewById(R.id.galleryBtn);
+        Button cancelBtn = root.findViewById(R.id.cancelBtn);
 
         dateTV.setText(new SimpleDateFormat("yyyy/MM/dd HH:mm").format(new Date()));
 
@@ -50,6 +51,8 @@ public class PostComposer extends DialogFragment {
                     getActivity().startActivityForResult(i, MainActivity.GALLERY_CALLBACK);
                 }
         );
+
+        cancelBtn.setOnClickListener( v -> dismiss() );
 
         if(path != null){
             galleryImg.setVisibility(View.VISIBLE);

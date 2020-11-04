@@ -10,13 +10,29 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.storage.FirebaseStorage;
+
 public class MainActivity extends AppCompatActivity {
+
+    /*
+    * !!!!
+    * !!!! AL CLONAR ESTE REPOSITORIO, CAMBIEN EL google-services.json
+    * !!!! PARA QUE SE CONECTEN A SU PROYECTO DE FIREBASE
+    * !!!!
+    * */
 
     public static final int GALLERY_CALLBACK = 1;
     private PostComposer composer;
     private ImageButton newPostBtn;
+    private TextView locationTV, bodyTV, dateTV;
+    private ImageView lastPostImg;
+    private FirebaseStorage storage;
+    private FirebaseFirestore db;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -29,6 +45,10 @@ public class MainActivity extends AppCompatActivity {
         }, 1);
 
         newPostBtn = findViewById(R.id.newPostBtn);
+        locationTV = findViewById(R.id.locationTV);
+        bodyTV = findViewById(R.id.bodyTV);
+        dateTV = findViewById(R.id.dateTV);
+        lastPostImg = findViewById(R.id.lastPostImg);
 
         newPostBtn.setOnClickListener(
                 v -> {

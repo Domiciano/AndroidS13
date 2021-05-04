@@ -26,13 +26,16 @@ public class MainActivity extends AppCompatActivity {
     * !!!!
     * */
 
-    public static final int GALLERY_CALLBACK = 1;
+
     private PostComposer composer;
     private ImageButton newPostBtn;
     private TextView locationTV, bodyTV, dateTV;
     private ImageView lastPostImg;
+
     private FirebaseStorage storage;
     private FirebaseFirestore db;
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,16 +62,5 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if(requestCode == GALLERY_CALLBACK && resultCode == RESULT_OK){
-            Uri uri = data.getData();
-            String path = UtilDomi.getPath(this, uri);
-            composer.setImagePath(path);
-            composer.dismiss();
-            composer.show(getSupportFragmentManager(), "composer");
-        }
 
-    }
 }

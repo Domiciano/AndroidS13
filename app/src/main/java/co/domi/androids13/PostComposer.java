@@ -54,7 +54,7 @@ public class PostComposer extends DialogFragment {
                 v -> {
                     Intent i = new Intent(Intent.ACTION_GET_CONTENT);
                     i.setType("image/*");
-                    getActivity().startActivityForResult(i, GALLERY_CALLBACK);
+                    startActivityForResult(i, GALLERY_CALLBACK);
                 }
         );
 
@@ -69,10 +69,6 @@ public class PostComposer extends DialogFragment {
         return root;
     }
 
-    public void setImagePath(String path) {
-        this.path = path;
-    }
-
     @Override
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -83,7 +79,5 @@ public class PostComposer extends DialogFragment {
             this.dismiss();
             this.show(getActivity().getSupportFragmentManager(), "composer");
         }
-
     }
-
 }

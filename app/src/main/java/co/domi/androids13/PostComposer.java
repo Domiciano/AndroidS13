@@ -13,15 +13,23 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.UUID;
 
 import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
+
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.storage.FirebaseStorage;
 
 public class PostComposer extends DialogFragment {
 
@@ -44,9 +52,11 @@ public class PostComposer extends DialogFragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View root = inflater.inflate(R.layout.composer, null);
         ImageView galleryImg = root.findViewById(R.id.galleryImg);
+        EditText postBodyET = root.findViewById(R.id.postBodyET);
         TextView dateTV = root.findViewById(R.id.dateTV);
         Button galleryBtn = root.findViewById(R.id.galleryBtn);
         Button cancelBtn = root.findViewById(R.id.cancelBtn);
+        Button publishBtn = root.findViewById(R.id.publishBtn);
 
         dateTV.setText(new SimpleDateFormat("yyyy/MM/dd HH:mm").format(new Date()));
 
@@ -58,9 +68,38 @@ public class PostComposer extends DialogFragment {
                 }
         );
 
-        cancelBtn.setOnClickListener( v -> dismiss() );
+        publishBtn.setOnClickListener(
+                v -> {
+                    if (path != null) {
+                        try {
+                            FirebaseStorage storage = FirebaseStorage.getInstance();
+                            FileInputStream fis = new FileInputStream(new File(path));
+                            String name = UUID.randomUUID().toString();
+                            storage.getReference().child("post").child(name).putStream(fis)
+                                    .addOnSuccessListener(
+                                            runnable -> {
+                                                Post post = new Post(UUID.randomUUID().toString(), postBodyET.getText().toString(), name);
+                                                FirebaseFirestore firestore = FirebaseFirestore.getInstance();
+                                                firestore.collection("users")
+                                                        .document("admin")
+                                                        .collection("posts")
+                                                        .document(UUID.randomUUID().toString()).set(post).addOnSuccessListener(
+                                                        task -> {
+                                                            this.dismiss();
+                                                        }
+                                                );
+                                            }
+                                    );
+                        } catch (FileNotFoundException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }
+        );
 
-        if(path != null){
+        cancelBtn.setOnClickListener(v -> dismiss());
+
+        if (path != null) {
             galleryImg.setVisibility(View.VISIBLE);
             Bitmap bitmap = BitmapFactory.decodeFile(path);
             galleryImg.setImageBitmap(bitmap);
@@ -69,10 +108,11 @@ public class PostComposer extends DialogFragment {
         return root;
     }
 
+
     @Override
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if(requestCode == GALLERY_CALLBACK && resultCode == Activity.RESULT_OK){
+        if (requestCode == GALLERY_CALLBACK && resultCode == Activity.RESULT_OK) {
             Uri uri = data.getData();
             String path = UtilDomi.getPath(getActivity(), uri);
             this.path = path;

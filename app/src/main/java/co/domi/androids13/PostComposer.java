@@ -13,6 +13,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -47,6 +48,8 @@ public class PostComposer extends DialogFragment {
         TextView dateTV = root.findViewById(R.id.dateTV);
         Button galleryBtn = root.findViewById(R.id.galleryBtn);
         Button cancelBtn = root.findViewById(R.id.cancelBtn);
+        EditText editText = root.findViewById(R.id.postBodyET);
+        Button publishBtn = root.findViewById(R.id.publishBtn);
 
         dateTV.setText(new SimpleDateFormat("yyyy/MM/dd HH:mm").format(new Date()));
 
